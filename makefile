@@ -16,7 +16,13 @@ CPU = 65816
 TARGET = bin/game.sfc
 
 # Config file containing the memory map, etc.
-CONFIG = game.conf
+CONFIG = layout.conf
+
+# Directories
+SRCDIR      := src
+RESDIR      := res
+BUILDDIR    := obj
+TARGETDIR   := bin
 
 # C sources (Notice: ca65 can only compile C sources to 6502, not 65c816)
 CSOURCES =
@@ -31,12 +37,6 @@ ASMSOURCES = register_definitions.asm \
 
 # Additional libraries to link
 LIBRARIES = 
-
-# Additional directories to add to the include path
-INCDIR = 
-
-# Object file directory
-ODIR = obj
 
 # ------------------------------------------------------------------------------
 
@@ -54,6 +54,7 @@ LDFLAGS=
 # System utilities 
 # RM - Some utility that can delete files
 RM=rm -f
+MKDIR=mkdir -p
 
 # ------------------------------------------------------------------------------
 
@@ -63,24 +64,30 @@ CFLAGS+=$(patsubst %,-I %,$(INCDIR))
 
 # Get object names
 OBJS_=$(CSOURCES:.c=.o) $(ASMSOURCES:.asm=.o)
-OBJS=$(patsubst %,$(ODIR)/%,$(OBJS_)) $(LIBRARIES)
+OBJS=$(patsubst %,$(BUILDDIR)/%,$(OBJS_)) $(LIBRARIES)
+
+#Fix paths
+PATHS = $(sort $(dir $(OBJS)))
 
 # ------------------------------------------------------------------------------
 
-all: clean $(TARGET)
+all: clean makedirs $(TARGET)
+
+makedirs:
+	$(MKDIR) $(PATHS)
 
 $(TARGET): $(OBJS) $(LIBRARIES)
 	$(LD65) $(LDFLAGS) --config $(CONFIG) --obj $(OBJS) -o $(TARGET)
 
-$(ODIR)/%.o: %.c
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	$(CC65) $(CFLAGS) -O -o $@ $<
 
-$(ODIR)/%.o: %.asm
+$(BUILDDIR)/%.o: $(SRCDIR)/%.asm
 	$(CA65) $(AFLAGS) -o $@ $<
 
 clean:
 	$(RM) $(TARGET)
-	$(RM) $(ODIR)/*.o
+	$(RM) $(BUILDDIR)/*.o
 
 .PHONY: all start done clean clean_all
 

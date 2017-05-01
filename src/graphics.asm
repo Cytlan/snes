@@ -12,4 +12,4 @@
 .export	Gfx_Text
 
 Gfx_Text:
-	.incbin	"text.chr"
+	.incbin	"res/chr/text.chr"
