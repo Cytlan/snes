@@ -20,7 +20,7 @@ In order to successfully assemble this project, the following programs are neede
 
 ```
 ca65
-cl65
+ld65
 make
 ```
 
@@ -35,3 +35,15 @@ Syntax highlighting
 -------------------
 
 If you're using Sublime Text, or any other editor that supports TextMate syntax highlighting, check out the ca65 directory. It has a syntax highlighting file made spesifically for this project (and may be updated frequently).
+
+Resources
+---------
+
+Super Nintendo Development Wiki: https://wiki.superfamicom.org/snes/show/HomePage
+Super Nintendo Developers Manual: https://www.romhacking.net/documents/226/
+
+TODOs
+-----
+
+Include a BRR encoder/decoder
+Find or make a decent tile editor and tilemap editor
