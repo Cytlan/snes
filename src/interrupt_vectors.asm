@@ -8,6 +8,7 @@
 ; ------------------------------------------------------------------------------
 
 .import Reset
+.import NMI
 .segment "InterruptVectors"
 
 	; Filler
@@ -18,7 +19,7 @@
 	.word $0000 ; COP
 	.word $0000 ; BRK
 	.word $0000 ; Abort
-	.word $0000 ; NMI
+	.word NMI   ; NMI
 	.word $0000 ; Unused
 	.word $0000 ; IRQ
 
@@ -30,6 +31,6 @@
 	.word $0000 ; COP
 	.word $0000 ; Unused
 	.word $0000 ; Abort
-	.word $0000 ; NMI
+	.word NMI   ; NMI
 	.word Reset ; Reset
 	.word $0000 ; IRQ/BRK

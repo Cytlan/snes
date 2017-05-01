@@ -57,7 +57,7 @@
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>^(?i)(?=(\s*|$))(\.(autoimport|import|export|segment|proc|a8|a16|i16|endproc))(?-i)</string>
+				<string>^(?i)(?=(\s*|$))(\.(autoimport|import|export|segment|proc|a8|a16|i16|endproc|include))(?-i)</string>
 				<key>name</key>
 				<string>keyword.control</string>
 			</dict>

@@ -21,6 +21,7 @@ CONFIG = layout.conf
 # Directories
 SRCDIR      := src
 RESDIR      := res
+INCDIR      := inc
 BUILDDIR    := obj
 TARGETDIR   := bin
 
@@ -60,7 +61,7 @@ MKDIR=mkdir -p
 
 # Finalizing flags
 CFLAGS+=$(patsubst %,-I %,$(INCDIR))
-#AFLAGS+=
+AFLAGS+=$(patsubst %,-I %,$(INCDIR))
 
 # Get object names
 OBJS_=$(CSOURCES:.c=.o) $(ASMSOURCES:.asm=.o)

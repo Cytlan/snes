@@ -24,12 +24,9 @@ ld65
 make
 ```
 
-Assembling should be as simple as:
-```
-make
-```
+Assembling should be as simple as running `make`.
 
-The assembled game can be found in bin/game.sfc.
+The assembled game can be found in `bin/game.sfc`.
 
 Syntax highlighting
 -------------------
@@ -39,11 +36,12 @@ If you're using Sublime Text, or any other editor that supports TextMate syntax 
 Resources
 ---------
 
-Super Nintendo Development Wiki: https://wiki.superfamicom.org/snes/show/HomePage
-Super Nintendo Developers Manual: https://www.romhacking.net/documents/226/
+ * Super Nintendo Development Wiki: https://wiki.superfamicom.org/snes/show/HomePage
+ * Super Nintendo Developers Manual: https://www.romhacking.net/documents/226/
 
 TODOs
 -----
 
 Include a BRR encoder/decoder
 Find or make a decent tile editor and tilemap editor
+Calculate the ROM checksum for the header
