@@ -13,7 +13,7 @@
 CPU = 65816
 
 # Name of the target ROM
-TARGET = bin/game.smc
+TARGET = bin/game.sfc
 
 # Config file containing the memory map, etc.
 CONFIG = game.conf
