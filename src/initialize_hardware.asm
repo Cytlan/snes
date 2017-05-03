@@ -8,6 +8,8 @@
 ; ------------------------------------------------------------------------------
 
 .autoimport	on
+.include "macros.inc"
+
 .export	InitializeHardware
 
 .segment "Initialize"
@@ -17,8 +19,7 @@
 .proc InitializeHardware
 	
 	; Initialize registers
-	sep	#$20 ; Set Accumulator to 8 bit mode
-.a8
+	ACC_8
 	lda #$8f
 	sta INIDISP
 	stz OBJSEL
@@ -113,6 +114,13 @@
 	stz MEMSEL
 
 	; Clear memory
+	ALL_16
+	ldy #$8000
+	stz VMADDR
+	@loop:
+		stz WRVMDATA
+		dey
+	bne @loop
 
 	rts
 .endproc
