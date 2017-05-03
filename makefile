@@ -41,11 +41,13 @@ LIBRARIES =
 
 # ------------------------------------------------------------------------------
 
+TOOLDIR=tools/bin/
+
 # Compile & Link, Compile, Assemble and Link utilities
-CL65=cl65
-CC65=cc65
-CA65=ca65
-LD65=ld65
+CL65=$(TOOLDIR)cl65
+CC65=$(TOOLDIR)cc65
+CA65=$(TOOLDIR)ca65
+LD65=$(TOOLDIR)ld65
 
 # Compiler, assembler and linker options
 CFLAGS=
