@@ -18,8 +18,9 @@
 ;
 ; ------------------------------------------------------------------------------
 
-.autoimport	on
+.autoimport on
 .include "macros.inc"
+.include "memory.asm"
 
 .export Reset
 
@@ -125,6 +126,21 @@ Str_2:
 		iny          ; Increment index
 		cmp #$00     ; Check if we've hit a null-terminator
 	bne	@loadstr
+	rts
+.endproc
+
+;
+;
+; A: argc
+; X: arg1
+; Y: arg2
+; S+0: fmt
+; S+1: dest
+; S+2: arg3
+; ...
+; S+n: argn
+;
+.proc sprintf
 	rts
 .endproc
 

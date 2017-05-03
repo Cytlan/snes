@@ -41,6 +41,7 @@ CSOURCES =
 
 # Assembly sources
 ASMSOURCES = registers.asm \
+             memory.asm \
              graphics.asm \
              main.asm \
              nmi.asm \
@@ -99,6 +100,8 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.asm
 	$(CA65) $(AFLAGS) -o $@ $<
+
+$(BUILDDIR)/memory.o: AFLAGS+=-DRAM_EXPORT
 
 clean:
 	$(RM) $(TARGET)

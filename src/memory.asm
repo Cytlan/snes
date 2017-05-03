@@ -1,5 +1,5 @@
 ; ------------------------------------------------------------------------------
-; Non-maskable interrupt
+; Memory
 ;
 ; Copyright (c) 2017, Cytlan, Shibesoft AS
 ;
@@ -18,23 +18,28 @@
 ;
 ; ------------------------------------------------------------------------------
 
-.autoimport	on
-.include "macros.inc"
-.include "memory.asm"
+.segment "ZEROPAGE"
 
-.segment "CODE"
-.export NMI
+.macro MEM_RESZP label, size
+   .ifdef RAM_EXPORT
+      label: .res size
+      .exportzp label
+   .else
+      .importzp label
+   .endif
+.endmacro
 
-.proc NMI
-	ACC_16
-		inc i
-	ACC_8
-@skip:
-	lda i
-	sta BG1HOFS
-	lda j
-	sta BG1HOFS
-	stz BG1VOFS
-	stz BG1VOFS
-	rti
-.endproc
+.macro MEM_RES label, size
+   .ifdef RAM_EXPORT
+      label: .res size
+      .export label
+   .else
+      .import label
+   .endif
+.endmacro
+
+MEM_RESZP i, 1
+MEM_RESZP j, 1
+MEM_RESZP k, 1
+MEM_RESZP l, 1
+
