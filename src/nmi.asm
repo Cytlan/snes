@@ -1,5 +1,5 @@
 ; ------------------------------------------------------------------------------
-; Graphics
+; Non-maskable interrupt
 ;
 ; Copyright (c) 2017, Cytlan, Shibesoft AS
 ;
@@ -18,9 +18,29 @@
 ;
 ; ------------------------------------------------------------------------------
 
-.segment "Graphics"
+.autoimport	on
+.include "macros.inc"
 
-.export	Gfx_Text
+.export NMI
 
-Gfx_Text:
-	.incbin	"res/chr/text.chr"
+.proc NMI
+	inc $01
+	lda $01
+	;cmp #$01
+	;bne @skip
+	ACC_16
+		sec
+		lda $02
+		adc #$00
+		sta $02
+	ACC_8
+	;stz $01
+@skip:
+	lda $02
+	sta BG1HOFS
+	lda $03
+	sta BG1HOFS
+	stz BG1VOFS
+	stz BG1VOFS
+	rti
+.endproc

@@ -1,16 +1,90 @@
 ; ------------------------------------------------------------------------------
 ; SNES Full Register Definitions
 ;
-; Author:  Cytlan
-; License: Copyright © 2017, Shibesoft AS
-;          All rights reserved
+; Copyright (c) 2017, Cytlan, Shibesoft AS
+;
+; This is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ; ------------------------------------------------------------------------------
 
-.export INIDISP, OBJSEL , OAMADDR, OAMADDL, OAMADDH, OAMDATA, BGMODE , MOSAIC 
-.export BG1SC  , BG2SC  , BG3SC  , BG4SC  , BG12NBA, BG34NBA, BG1HOFS, BG1VOFS
-.export BG2HOFS, BG2VOFS, BG3HOFS, BG3VOFS, BG4HOFS, BG4VOFS, VMAINC , VMADDR
-.export VMADDH , VMADDL , VMDATA , VMDATAH, VMDATAL, M7SEL
+; ------------------------------------------------------------------------------
+; PPU Registers ----------------------------------------------------------------
+; ------------------------------------------------------------------------------
+.export INIDISP   , OBJSEL    , OAMADDR   , OAMADDL   , OAMADDH   , OAMDATA
+.export BGMODE    , MOSAIC    , BG1SC     , BG2SC     , BG3SC     , BG4SC
+.export BG12NBA   , BG34NBA   , BG1HOFS   , BG1VOFS   , BG2HOFS   , BG2VOFS
+.export BG3HOFS   , BG3VOFS   , BG4HOFS   , BG4VOFS   , VMAINC    , VMADDR
+.export VMADDL    , VMADDH    , VMDATA    , VMDATAL   , VMDATAH   , M7SEL
+.export M7A       , M7B       , M7C       , M7D       , M7X       , M7Y
+.export CGADD     , WRCGDATA  , W12SEL    , W34SEL    , WOBJSEL   , WH0
+.export WH1       , WH2       , WH3       , WBGLOG    , WOBJLOG   , TM
+.export TS        , TMW       , TSW       , CGSWSEL   , CGADSUB   , COLDATA
+.export SETINI    , MPYL      , MPYM      , MPYH      , SLHV      , RDOAMDATA
+.export RDVMDATA  , RDVMDATAL , RDVMDATAH , RDCGDATA  , OPHCT     , OPVCT
+.export STAT77    , STAT78    , APUIO0    , APUIO1    , APUIO2    , APUIO3
+.export WMDATA    , WMADDR    , WMADDL    , WMADDH
+
+; ------------------------------------------------------------------------------
+; CPU Registers ----------------------------------------------------------------
+; ------------------------------------------------------------------------------
+.export NMITIMEN  , WRIO      , WRMPYA    , WRMPYB    , WRDIVL    , WRDIVH
+.export WRDIVB    , HTIMEL    , HTIMEH    , VTIMEL    , VTIMEH    , MDMAEN
+.export HDMAEN    , MEMSEL    , RDNMI     , TIMEUP    , HVBJOY    , RDIO
+.export RDDIVL    , RDDIVH    , RDMPYL    , RDMPYH    , STDCNTRL1L, STDCNTRL1H
+.export STDCNTRL2L, STDCNTRL2H, STDCNTRL3L, STDCNTRL3H, STDCNTRL4L, STDCNTRL4H
+
+; ------------------------------------------------------------------------------
+; List of Abbreviations and Terms ----------------------------------------------
+; ------------------------------------------------------------------------------
+;    ADPCM - Adaptive Differential PCM
+;    APU   - Audio Processing Unit
+;    BG    - Background
+;    BBR   - Bit Rate Reduction
+;    CG    - Color Generator
+;    CHR   - Character (Refers to graphic tiles, not in-game characters)
+;    DAC   - Digital to Analog Converter (Converts the digital audio to analog)
+;    DMA   - Direct Memory Access (Fast memory transfer to the PPU)
+;    DSP   - Digital Signal Processor (Produces the actual digital audio)
+;    H-DMA - Horizontal DMA (DMA transfer on every H-Blank)
+;    H/V   - Horizontal/Vertical
+;    IC    - Integrated Circuit (A microchip)
+;    IPL   - Initial Program Loader (The APU bootloader ROM)
+;    IRQ   - Interrupt Request
+;    NMI   - Non-Maskable Interrupt (Interrupt cannot be ignored)
+;    OAM   - Object Attribute Memory (Objects/Sprites are stored here)
+;    OBJ   - Object (Sprites)
+;    PCM   - Pulse Code Modulated (Sound samples/Waveform)
+;    PPU   - Picture Processing Unit (The SNES GPU)
+;    PSW   - Program Status Word
+;    SC    - Screen? TODO: Find out what this really is...
+;    SRAM  - Static RAM, used for battery backed RAM
+;    VRAM  - Video RAM, used by the PPU
+;    WRAM  - Work RAM, used by the CPU
+; 
+;    S-PPU        - The SNES PPU
+;    S-CPU        - The SNES CPU       (Do not confuse with the Sound-CPU!)
+;    Sound-CPU    - The CPU of the APU (Never written as 'S-CPU' or 'SCPU'!)
+;    Scanline     - Horizontal line on the TV
+;    Blanking     - PPU is not rendering a picture.
+;    H-Blank      - Horizontal blank, when the beam moves to the next scanline.
+;    V-Blank      - Vertical blank, time between finished frame and next frame.
+;    Forced Blank - PPU is disabled by the game on runtime.
+; 
+; Note: VRAM, OAM and CGRAM may only be accessed during blanking.
+; 
+; Note: Unless otherwise specified, write twice registers are to be written in
+;       the order of Low byte, then High byte.
 
 ; ------------------------------------------------------------------------------
 ; PPU Registers
@@ -321,6 +395,9 @@ CGADD = $2121   ; CG-Ram Data (Low, High)
                 ;   NOTE: The data can be written during H/V BLANK or FORCED
                 ;         BLANK period.
 
+; Data for CG-RAM write
+WRCGDATA  = $2122
+
 ; ------------------------------------------------------------------------------
 ; Window Mask Setting ----------------------------------------------------------
 ; ------------------------------------------------------------------------------
@@ -363,3 +440,138 @@ WH3 = $2129     ; Window-2 Right Position Designation. (0-255)
 ; ------------------------------------------------------------------------------
 ; Mask Logic Setting For Window-1 & 2 On Each Screen ---------------------------
 ; ------------------------------------------------------------------------------
+
+; Windows masking
+WBGLOG    = $212A
+WOBJLOG   = $212B
+
+; Main screen selection
+TM        = $212C
+
+; Sub screen selection
+TS        = $212D
+
+; Main screen window selection
+TMW       = $212E
+
+; Sub screen window selection
+TSW       = $212F
+
+; Fixed color addition / Screen addition settings
+CGSWSEL   = $2130
+
+; Addition/Subtraction and subtraction for each BG
+CGADSUB   = $2131
+
+; Fixed color data for fixed addition / subtraction
+COLDATA   = $2132
+
+; Screen initial settings
+SETINI    = $2133
+
+; Multiplication result
+MPYL      = $2134
+MPYM      = $2135
+MPYH      = $2136
+
+; Software latch for H/V counter
+SLHV      = $2137
+
+; Read data from OAM
+RDOAMDATA = $2138
+
+; Read data from VRAM
+RDVMDATA  = $2139
+RDVMDATAL = $2139
+RDVMDATAH = $213A
+
+; Read data from CGRAM
+RDCGDATA  = $213B
+
+; H/V Counter data
+OPHCT     = $213C
+OPVCT     = $213D
+
+; PPU Status flag and version number
+STAT77    = $213E
+STAT78    = $213F
+
+; Communication port with APU
+APUIO0    = $2140
+APUIO1    = $2141
+APUIO2    = $2142
+APUIO3    = $2143
+
+; Data to consecutively read and write to WRAM
+WMDATA    = $2180
+
+; Address to consecutively read and write WRAM
+WMADDR    = $2181
+WMADDL    = $2182
+WMADDH    = $2183
+
+; ------------------------------------------------------------------------------
+; CPU Registers ----------------------------------------------------------------
+; ------------------------------------------------------------------------------
+
+; NMI enable, Timer enable and Standard Controller enable
+NMITIMEN = $4200
+
+; Programmable I/O Port Out
+WRIO     = $4201
+
+; Multiplier and Multiplicand by Multiplication
+WRMPYA   = $4202
+WRMPYB   = $4203
+
+; Divisor and Dividend by Divide
+WRDIVL   = $4204
+WRDIVH   = $4205
+WRDIVB   = $4206
+
+; H-Count timer settings
+HTIMEL   = $4207
+HTIMEH   = $4208
+
+; V-Count timer settings
+VTIMEL   = $4209
+VTIMEH   = $420A
+
+; General purpose DMA enable flags
+MDMAEN   = $420B
+
+; H-DMA enable flags
+HDMAEN   = $420C
+
+; Fast Memory enable
+MEMSEL   = $420D
+
+; V-Blank NMI flag and CPU version number
+RDNMI    = $4210
+
+; H/V timer IRQ enable
+TIMEUP   = $4211
+
+; H/V blank flag and standard controller enable
+HVBJOY   = $4212
+
+; Programmable I/O Port In
+RDIO     = $4213
+
+; Quotient of divide result
+RDDIVL   = $4214
+RDDIVH   = $4215
+
+; Product of multiplication result or remainder of divide result
+RDMPYL   = $4216
+RDMPYH   = $4217
+
+; Data for standard controller 1-4
+STDCNTRL1L = $4218
+STDCNTRL1H = $4219
+STDCNTRL2L = $421A
+STDCNTRL2H = $421B
+STDCNTRL3L = $421C
+STDCNTRL3H = $421D
+STDCNTRL4L = $421E
+STDCNTRL4H = $421F

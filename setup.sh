@@ -5,7 +5,7 @@
 #
 
 # Install dependencies
-sudo apt install build-essential git g++-4.9 gtk+-2.0 libcairo-dev libgtksourceview2.0-dev
+sudo apt install build-essential git g++-4.9 gtk+-2.0 libcairo-dev libgtksourceview2.0-dev libsdl2-dev libao-dev libopenal-dev
 
 # Make dirs
 cd tools

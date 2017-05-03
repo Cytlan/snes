@@ -29,9 +29,10 @@ TARGETDIR   := bin
 CSOURCES =
 
 # Assembly sources
-ASMSOURCES = register_definitions.asm \
+ASMSOURCES = registers.asm \
              graphics.asm \
              main.asm \
+             nmi.asm \
              initialize_hardware.asm \
              cartridge_header.asm \
              interrupt_vectors.asm
