@@ -29,43 +29,37 @@
 				<key>match</key>
 				<string>#?\$[0-9a-fA-F]+</string>
 				<key>name</key>
-				<string>storage.type</string>
+				<string>constant.numeric.hex</string>
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>#?\%[0-9a-fA-F]+\b</string>
+				<string>#?%[0-1]+\b</string>
 				<key>name</key>
-				<string>storage.type</string>
+				<string>constant.numeric.other</string>
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>\#[0-9a-zA-Z]+\b</string>
+				<string>\#[0-9]+\b</string>
 				<key>name</key>
-				<string>storage.type</string>
+				<string>constant.numeric.int</string>
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>^[@0-9a-zA-Z]+\b\:</string>
+				<string>(?&lt;=\s|^)[@0-9a-zA-Z_-]+\:</string>
 				<key>name</key>
 				<string>entity.name.function</string>
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>[\s]+[.]{1}[a-zA-Z]+\b</string>
+				<string>(?i)(\.(autoimport|import|export|segment|proc|a8|a16|i16|endproc|include|macro|endmacro|asciiz|word|byte|incbin|loword))\b(?-i)</string>
 				<key>name</key>
-				<string>constant.language</string>
+				<string>support.function</string>
 			</dict>
 			<dict>
 				<key>match</key>
-				<string>^(?i)(?=(\s*|$))(\.(autoimport|import|export|segment|proc|a8|a16|i16|endproc|include))(?-i)</string>
+				<string>(?i)(?&lt;=\s|^)(ADC|AND|BCC|BCS|BEQ|BIT|BMI|BNE|BPL|BRA|BRK|BVC|BVS|CLC|CLD|CLI|CLP|CLR|CMP|CPX|CPY|CSP|DEC|DEX|DEY|EOR|HLT|INC|INX|INY|JML|JMP|JSR|LDA|LDX|LDY|MVN|MVP|NOP|ORA|PHA|PHB|PHD|PHK|PHP|PHX|PHY|PLA|PLB|PLD||PLP|PLX|PLY|PSH|PUL|RET|ROL|ROR|RTI|RTL|RTS|SBC|SEC|SED|SEI|SEP|SHL|SHR|STA|STX|STY|STZ|SWA|TAD|TAS|TAX|TAY|TCB|TDA|TSA|TSB|TSX|TXA|TXS|TXY|TYA|TYX|WAI|XCE)\b(?-i)</string>
 				<key>name</key>
-				<string>keyword.control</string>
-			</dict>
-			<dict>
-				<key>match</key>
-				<string>(?i)(?&lt;=\s)(ADC|AND|BCC|BCS|BEQ|BIT|BMI|BNE|BPL|BRA|BRK|BVC|BVS|CLC|CLD|CLI|CLP|CLR|CMP|CPX|CPY|CSP|DEC|DEX|DEY|EOR|HLT|INC|INX|INY|JMP|JSR|LDA|LDX|LDY|MVN|MVP|NOP|ORA|PHA|PHP|PHX|PHY|PLA|PLP|PLX|PLY|PSH|PUL|RET|ROL|ROR|RTI|RTL|RTS|SBC|SED|SEI|SEP|SHL|SHR|STA|STX|STY|SWA|TAD|TAS|TAX|TAY|TCB|TDA|TSA|TSB|TSX|TXA|TXS|TXY|TYA|TYX|WAI|XCE)(?=(\s|$))(?-i)</string>
-				<key>name</key>
-				<string>keyword.operator</string>
+				<string>keyword.operator.word</string>
 			</dict>
 		</array>
 		<key>scopeName</key>
