@@ -43,3 +43,18 @@ MEM_RESZP j, 1
 MEM_RESZP k, 1
 MEM_RESZP l, 1
 
+; Pointers
+MEM_RESZP ptr1, 2
+MEM_RESZP ptr2, 2
+MEM_RESZP ptr3, 2
+MEM_RESZP ptr4, 2
+
+; Long Pointers
+MEM_RESZP lptr1, 3
+MEM_RESZP lptr2, 3
+MEM_RESZP lptr3, 3
+MEM_RESZP lptr4, 3
+
+; Temp string for testing
+MEM_RESZP str, 32
+

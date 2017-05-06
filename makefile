@@ -44,6 +44,7 @@ ASMSOURCES = registers.asm \
              memory.asm \
              graphics.asm \
              main.asm \
+             sprintf.asm \
              nmi.asm \
              initialize_hardware.asm \
              cartridge_header.asm \

@@ -101,6 +101,20 @@ Str_HelloWorld:
 Str_2:
 	.asciiz "WXYZabcdefghijklmnopqrstuvwxyz!^"
 
+fmt_str:
+	.asciiz "sprintf, %s! Works: '%s'."
+
+str_3:
+	.asciiz "hello"
+
+str_4:
+	.asciiz "yes"
+
+str_hex_upper:
+	.asciiz "0123456789ABCDEF"
+str_hex_lower:
+	.asciiz "0123456789abcdef"
+
 ; ------------------------------------------------------------------------------
 ; Code
 ; ------------------------------------------------------------------------------
@@ -125,22 +139,7 @@ Str_2:
 		sta VMDATA ; Store it in the nametable
 		iny          ; Increment index
 		cmp #$00     ; Check if we've hit a null-terminator
-	bne	@loadstr
-	rts
-.endproc
-
-;
-;
-; A: argc
-; X: arg1
-; Y: arg2
-; S+0: fmt
-; S+1: dest
-; S+2: arg3
-; ...
-; S+n: argn
-;
-.proc sprintf
+	bne @loadstr
 	rts
 .endproc
 
@@ -202,14 +201,22 @@ Str_2:
 		dey
 	bne @loadchr
 
-	; Copy the "Hello, World!" string to the nametable
-	; Set register
-	;lda	#$41A9
+	ALL_8
+	lda #0
+	ldy #32
+	@cl:
+		sta str,y
+		dey
+	bne @cl
+
+	SPRINTF fmt_str, str, str_3, str_4
+
+	ALL_16
 	lda #($4000+($20*$4))
-	ldx #.loword(Str_HelloWorld)
+	ldx #.loword(str)
 	jsr WriteString
 	lda #($4400+($20*$4))
-	ldx #.loword(Str_2)
+	ldx #.loword(str)
 	jsr WriteString
 
 	; Main screen selection

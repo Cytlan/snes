@@ -19,3 +19,4 @@
 ; ------------------------------------------------------------------------------
 
 .include "macros/reg_size.asm"
+.include "macros/sprintf.asm"

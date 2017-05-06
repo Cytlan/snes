@@ -1,5 +1,5 @@
 ; ------------------------------------------------------------------------------
-; Non-maskable interrupt
+; sprintf macros
 ;
 ; Copyright (c) 2017, Cytlan, Shibesoft AS
 ;
@@ -18,22 +18,39 @@
 ;
 ; ------------------------------------------------------------------------------
 
-.autoimport	on
-.include "macros.inc"
-.include "memory.asm"
+.macro  SPRINTF_PUSH r1, r2, r3, r4, r5
+	; push last argument first
+	.ifblank r1
+		.exitmacro
+	.endif
+	.if .paramcount > 1
+		SPRINTF_PUSH r2, r3, r4, r5
+	.endif
 
-.segment "CODE"
-.export NMI
+	; pointer
+	lda #r1
+	pha
+	ldx #.bankbyte(r1)
+	phx
+.endmacro
 
-.proc NMI
+.macro SPRINTF fmt, dest, r1, r2, r3, r4, r5
 	ACC_16
-		inc i
-	ACC_8
-	lda i
-	sta BG1HOFS
-	lda j
-	sta BG1HOFS
-	stz BG1VOFS
-	stz BG1VOFS
-	rti
-.endproc
+	INDEX_8
+
+	; format string pointer
+	lda #fmt
+	sta lptr1
+	ldx #.bankbyte(fmt)
+	stx lptr1+2
+
+	; destination pointer
+	lda #dest
+	sta lptr2
+	ldx #.bankbyte(dest)
+	stx lptr2+2
+
+	SPRINTF_PUSH r1, r2, r3, r4, r5
+
+	jsr sprintf
+.endmacro
