@@ -37,6 +37,8 @@ function ApplicationPanel(options)
 	this.currentMenu = null;
 	this.openMenuItem = null;
 
+	this.sticky = false;
+
 	var that = this;
 	var fileMenu = [
 		{text: "Open CHR", x: 0, y: 0, width: 0, height: 0, size: 0, hover: false, func: function(){ that.loadChr() }},
@@ -78,7 +80,7 @@ ApplicationPanel.prototype.closeMenu = function()
 
 ApplicationPanel.prototype.event = function(type, data)
 {
-	if(type == 'mousemove' || type == 'mousedown')
+	if(type == 'mousemove' || type == 'mousedown' || type == 'mouseup')
 	{
 		if(data.y < this.height)
 		{
@@ -89,7 +91,8 @@ ApplicationPanel.prototype.event = function(type, data)
 				{
 					if(type == 'mouseup' || this.currentMenu)
 					{
-
+						this.sticky = true;
+						data.consumed = true;
 					}
 					if(type == 'mousedown' || this.currentMenu)
 					{
@@ -129,6 +132,11 @@ ApplicationPanel.prototype.event = function(type, data)
 					this.win.dirty(this);
 				mi.hover = false;
 			}
+		}
+		if(!data.consumed)
+		{
+			if(type == 'mouseup' && this.sticky)
+				this.closeMenu();
 		}
 	}
 }

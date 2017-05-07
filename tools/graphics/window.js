@@ -86,6 +86,15 @@ Window.prototype.setCanvas = function(canvas)
 		win.event('mousedown', {x: x, y: y, button: button});
 	}, false);
 
+	canvas.addEventListener('mouseup', function(e)
+	{
+		var rect = canvas.getBoundingClientRect();
+		var x = e.clientX - rect.left;
+		var y = e.clientY - rect.top;
+		var button = e.button;
+		win.event('mouseup', {x: x, y: y, button: button});
+	}, false);
+
 	fileInput = document.getElementById('fileInput');
 	fileInput.addEventListener('change', function(e)
 	{
