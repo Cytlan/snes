@@ -41,7 +41,7 @@ ContextMenu.prototype.setWindow = function(win)
 
 ContextMenu.prototype.event = function(type, data)
 {
-	if(type == 'mousemove' || type == 'mousedown')
+	if(type == 'mousemove' || type == 'mouseup')
 	{
 		if(data.x >= this.x && data.x <= this.x + this.width)
 		{
@@ -50,7 +50,7 @@ ContextMenu.prototype.event = function(type, data)
 				var mi = this.menuItems[i];
 				if(!data.consumed && data.y >= mi.y && data.y <= mi.y + mi.height)
 				{
-					if(type == 'mousedown')
+					if(type == 'mouseup')
 					{
 						this.parent.closeMenu();
 						mi.func();

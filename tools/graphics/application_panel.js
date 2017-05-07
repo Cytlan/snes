@@ -135,7 +135,10 @@ ApplicationPanel.prototype.event = function(type, data)
 		}
 		if(!data.consumed)
 		{
-			if(type == 'mouseup' && this.sticky)
+			if(type == 'mouseup' && this.sticky && !(
+				data.y >= this.currentMenu.y && data.y <= this.currentMenu.y + this.currentMenu.height &&
+				data.x >= this.currentMenu.x && data.x <= this.currentMenu.x + this.currentMenu.width
+			))
 				this.closeMenu();
 		}
 	}
