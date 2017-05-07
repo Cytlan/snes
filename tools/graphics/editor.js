@@ -62,3 +62,10 @@ function resizeWindow()
 	win.resize(width, height);
 }
 resizeWindow();
+
+function getRender()
+{
+	win.renderFrame();
+	window.requestAnimationFrame(getRender);
+}
+getRender();

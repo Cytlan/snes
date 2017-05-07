@@ -29,6 +29,7 @@ function StatusPanel(options)
 	this.autoWidth = this.width == 0;
 	this.x = 0;
 	this.y = 0;
+	this.z = 0;
 	this.weight = options.weight;
 	this.background = options.background || '#000000';
 }

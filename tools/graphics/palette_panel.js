@@ -23,11 +23,17 @@ function PalettePanel()
 	this.win = null;
 	this.x = 0;
 	this.y = 0;
+	this.z = 0;
 	this.width = 300;
-	this.height = 300;
+	this.height = 0;
 
 	this.palette = new Palette();
 	var def = [
+		// Black
+			0x000000,
+		// 6 Shades of Aluminium Gray
+			0x2E3436, 0xEEEEEC, 0xD3D7CF, 0xBABDB6, 
+			0x888A85, 0x555753,
 		// Butter
 			0xFCE96F, 0xEDD400,
 		// Orange
@@ -42,14 +48,17 @@ function PalettePanel()
 			0xAD7FA8,
 		// Scarlet Red
 			0xEF2929,
-		// 6 Shades of Aluminium Gray
-			0xEEEEEC, 0xD3D7CF, 0xBABDB6, 
-			0x888A85, 0x555753, 0x2E3436,
-		// Black
-			0x000000
 	];
 	for(var i in def)
 		this.palette.color(i, def[i]);
+}
+
+PalettePanel.prototype.event = function(type, data)
+{
+	if(type == 'getpalette')
+	{
+		data.callback(this.palette);
+	}
 }
 
 PalettePanel.prototype.setWindow = function(win)

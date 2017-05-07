@@ -27,10 +27,15 @@ function Window()
 	this.height = 0;
 	this.canvas = null;
 	this.ctx = null;
-	this.objs = [];
-	this.objsSorted = false;
 
 	this.rows = [];
+	this.objs = [];
+	this.objsSorted = false;
+	this.overlay = [];
+
+	this.topZ = 0;
+
+	this.isDirty = true;
 
 	this.constraints = {
 		left: 0,
@@ -38,6 +43,9 @@ function Window()
 		top: 0,
 		bottom: 0,
 	}
+
+	this.fileCallback = [];
+	this.fileInput = null;
 }
 
 Window.prototype.addRow = function(columns, height)
@@ -51,6 +59,84 @@ Window.prototype.setCanvas = function(canvas)
 {
 	this.canvas = canvas;
 	this.ctx = canvas.getContext("2d");
+
+	var win = this;
+	canvas.addEventListener('mousemove', function(e)
+	{
+		var rect = canvas.getBoundingClientRect();
+		var x = e.clientX - rect.left;
+		var y = e.clientY - rect.top;
+		win.event('mousemove', {x: x, y: y});
+	}, false);
+
+	canvas.addEventListener('mouseout', function(e)
+	{
+		var x = -1;
+		var y = -1;
+		win.event('mousemove', {x: x, y: y});
+	}, false);
+
+	// Add event listener for `click` events.
+	canvas.addEventListener('mousedown', function(e)
+	{
+		var rect = canvas.getBoundingClientRect();
+		var x = e.clientX - rect.left;
+		var y = e.clientY - rect.top;
+		var button = e.button;
+		win.event('mousedown', {x: x, y: y, button: button});
+	}, false);
+
+	fileInput = document.getElementById('fileInput');
+	fileInput.addEventListener('change', function(e)
+	{
+		win.fileCallback.pop()(e);
+	}, false);
+
+}
+
+Window.prototype.getFile = function(callback)
+{
+	this.fileCallback.push(function(e)
+	{
+		var file = e.target.files[0];
+		var fo = {name: file.name, size: file.size};
+
+		var reader = new FileReader();
+		reader.onload = function(e2)
+		{
+			fo.data = new Uint8Array(e2.target.result);
+			callback(fo);
+		}
+		reader.readAsArrayBuffer(file);
+	})
+	fileInput.click();
+}
+
+Window.prototype.renderFrame = function()
+{
+	if(!this.isDirty)
+		return;
+	this.render();
+	this.isDirty = false;
+}
+
+Window.prototype.dirty = function(obj)
+{
+	this.isDirty = true;
+}
+
+Window.prototype.event = function(type, data)
+{
+	if(!this.objsSorted)
+		this.sortObjects();
+
+	data.consumed = false;
+	for(var i in this.objs)
+	{
+		var o = this.objs[i];
+		if(o.event)
+			o.event(type, data);
+	}
 }
 
 Window.prototype.resize = function(width, height)
@@ -62,12 +148,46 @@ Window.prototype.resize = function(width, height)
 	win.render();
 }
 
+Window.prototype.detach = function(obj)
+{
+	// This function sucks
+	for(var i in this.rows)
+	{
+		for(var j in this.rows[i].objs)
+		{
+			if(this.rows[i].objs[j] === obj)
+				delete this.rows[i].objs[j];
+		}
+	}
+	for(var i in this.objs)
+		if(this.objs[i] === obj)
+			delete this.objs[i];
+	for(var i in this.overlay)
+		if(this.overlay[i] === obj)
+			delete this.overlay[i];
+	this.dirty();
+}
+
 Window.prototype.attach = function(rowId, obj)
 {
+	if(typeof rowId === 'number')
+	{
+		this.rows[rowId].objs.push(obj);
+	}
+	else
+	{
+		obj = rowId;
+		this.overlay.push(obj);
+	}
+
 	obj.setWindow(this);
 	this.objs.push(obj);
-	this.rows[rowId].objs.push(obj);
+
 	this.objsSorted = false;
+	if(obj.z > this.topZ)
+		this.topZ = obj.z;
+
+	this.dirty();
 }
 
 Window.prototype.render = function()
@@ -85,17 +205,29 @@ Window.prototype.render = function()
 			o.y = curHeight;
 			o.height = r.height;
 			o.render();
+
+			if(o.z > this.topZ)
+				this.topZ = o.z;
 		}
 		curHeight += r.height;
+	}
+
+	for(var i in this.overlay)
+	{
+		var o = this.overlay[i];
+		o.render();
+
+		if(o.z > this.topZ)
+			this.topZ = o.z;
 	}
 }
 
 Window.prototype.sortObjects = function()
 {
 	function compare(a,b) {
-		if (a.weight < b.weight)
+		if (a.z < b.z)
 			return -1;
-		if (a.weight > b.weight)
+		if (a.z > b.z)
 			return 1;
 		return 0;
 	}
@@ -106,34 +238,4 @@ Window.prototype.sortObjects = function()
 		this.objs[i].weightIndex = i;
 
 	this.objsSorted = true;
-}
-
-Window.prototype.calculateSize = function(panel)
-{
-	if(this.objsSorted)
-		this.sortObjects();
-
-	var weight = panel.weight;
-
-	var constraints = {
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom: 0,
-	}
-
-	// Find restraints based on all objects wight more weight than us
-	for(var i = panel.weightIndex + 1; i < this.objs.length; i++)
-	{
-		var o = this.objs[i];
-		if(o.floatTop)
-			constraints.top += o.height;
-		if(o.floatBottom)
-			constraints.bottom += o.height;
-		if(o.floatLeft)
-			constraints.left += o.width;
-		if(o.floatRight)
-			constraints.right += o.width;
-	}
-
 }

@@ -30,12 +30,16 @@ function Palette()
 
 Palette.prototype.setColor = function(index, color)
 {
+	if(index > 16)
+		console.log("Index("+index+") out of bounds!");
 	this.colors[index].setColor(color);
 	return this.colors[index];
 }
 
 Palette.prototype.getColor = function(index)
 {
+	if(index > 16)
+		console.log("Index("+index+") out of bounds!");
 	return this.colors[index];
 }
 
