@@ -31,6 +31,9 @@ function ChrPanel()
 	this.columns = 16;
 	this.type = 1; // 0: 1bpp, 2: 2bpp, 3: 4bpp
 
+	this.curTileX = 0;
+	this.curTileY = 0;
+
 	this.chr = null;
 }
 
@@ -56,6 +59,30 @@ ChrPanel.prototype.event = function(type, data)
 			that.chr.renderChrmap(palette);
 			that.win.dirty(that);
 		}});
+	}
+	else if(type == 'mousemove')
+	{
+		if( this.chr &&
+			data.x >= this.chr.x && data.x <= this.chr.x + this.chr.width &&
+			data.y >= this.chr.y && data.y <= this.chr.y + this.chr.height
+		)
+		{
+			var tilex = ((data.x - this.chr.x) / this.chr.zoom) >> 3;
+			var tiley = ((data.y - this.chr.y) / this.chr.zoom) >> 3;
+
+			if(this.curTileX != tilex || this.curTileY != tiley)
+			{
+				this.curTileX = tilex;
+				this.curTileY = tiley;
+				this.win.dirty(this);
+			}
+		}
+		else if(this.curTileX >= 0 || this.curTileY >= 0)
+		{
+			this.curTileX = -1;
+			this.curTileY = -1;
+			this.win.dirty(this);
+		}
 	}
 }
 
@@ -83,6 +110,15 @@ ChrPanel.prototype.render = function()
 	{
 		var x = this.x + (this.width / 2) - (this.chr.width / 2);
 		var y = this.y + 100;
+		this.chr.x = x;
+		this.chr.y = y;
 		this.win.ctx.putImageData(this.chr.img, x, y);
+
+		if(this.curTileX >= 0 || this.curTileY >= 0)
+		{
+			this.win.ctx.strokeStyle = '#FFFFFF';
+			this.win.ctx.lineWidth = 1;
+			this.win.ctx.strokeRect(this.chr.x + (this.curTileX * 8 * this.chr.zoom), this.chr.y + (this.curTileY * 8 * this.chr.zoom), 8 * this.chr.zoom, 8 * this.chr.zoom);
+		}
 	}
 }
