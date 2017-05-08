@@ -117,8 +117,14 @@ ChrPanel.prototype.render = function()
 		if(this.curTileX >= 0 || this.curTileY >= 0)
 		{
 			this.win.ctx.strokeStyle = '#FFFFFF';
+			this.win.ctx.setLineDash([5, 5]);
 			this.win.ctx.lineWidth = 1;
-			this.win.ctx.strokeRect(this.chr.x + (this.curTileX * 8 * this.chr.zoom), this.chr.y + (this.curTileY * 8 * this.chr.zoom), 8 * this.chr.zoom, 8 * this.chr.zoom);
+			this.win.ctx.strokeRect(
+				this.chr.x + (this.curTileX * 8 * this.chr.zoom) - 1,
+				this.chr.y + (this.curTileY * 8 * this.chr.zoom) - 1,
+				(8 * this.chr.zoom) + 2,
+				(8 * this.chr.zoom) + 2
+			);
 		}
 	}
 }
